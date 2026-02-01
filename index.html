@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DietTrack Pro – Cloud Sync Edition</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+    }
+
+    header {
+      padding: 25px;
+      text-align: center;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .container {
+      padding: 25px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .meal {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      margin: 10px 0;
+      background: rgba(0,0,0,0.35);
+      border-radius: 16px;
+      transition: transform .1s;
+    }
+
+    .meal:active { transform: scale(.99); }
+
+    .nutri { font-size: 13px; opacity: 0.9; }
+
+    button {
+      background: linear-gradient(135deg, #00ffd5, #00c896);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button.done { background: #2e7d32; color:#fff; }
+
+    .summary {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    /* Name Modal */
+    .modal{
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,.7);display:none;
+      align-items:center;justify-content:center;
+      backdrop-filter:blur(4px);
+    }
+    .modal-box{
+      background:#10232a;padding:22px;border-radius:18px;
+      width:320px;text-align:center;
+      box-shadow:0 0 20px #00ffd533;
+    }
+    .modal input{
+      width:100%;padding:10px;border-radius:12px;
+      border:none;margin:10px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🥗 DietTrack Pro – Cloud</h1>
+  <p>Works Across Multiple Devices</p>
+</header>
+
+<div class="container">
+  <div class="card">
+
+    <div style="display:flex;justify-content:space-between">
+      <h2>Kerala Food List</h2>
+      <div>
+        <strong id="userLabel"></strong>
+        <button onclick="changeUser()">Switch User</button>
+        <button onclick="resetDay()">Reset</button>
+      </div>
+    </div>
+
+    <div id="meals">
+      <div class="meal" data-id="0"><span>🥛 Milk (1 glass)</span><span class="nutri">Protein: 8 g</span><span class="nutri">Calories: 150 kcal</span><button onclick="add(this,8,150,0)">Add</button></div>
+      <div class="meal" data-id="1"><span>🍚 Idli (2)</span><span class="nutri">Protein: 6 g</span><span class="nutri">Calories: 120 kcal</span><button onclick="add(this,6,120,1)">Add</button></div>
+      <div class="meal" data-id="2"><span>🥞 Dosa (1)</span><span class="nutri">Protein: 6 g</span><span class="nutri">Calories: 160 kcal</span><button onclick="add(this,6,160,2)">Add</button></div>
+      <div class="meal" data-id="3"><span>🍠 Puttu + Kadala Curry</span><span class="nutri">Protein: 12 g</span><span class="nutri">Calories: 300 kcal</span><button onclick="add(this,12,300,3)">Add</button></div>
+      <div class="meal" data-id="4"><span>🥥 Appam + Stew</span><span class="nutri">Protein: 7 g</span><span class="nutri">Calories: 250 kcal</span><button onclick="add(this,7,250,4)">Add</button></div>
+      <div class="meal" data-id="5"><span>🍛 Rice + Sambar</span><span class="nutri">Protein: 10 g</span><span class="nutri">Calories: 280 kcal</span><button onclick="add(this,10,280,5)">Add</button></div>
+      <div class="meal" data-id="6"><span>🥗 Avial</span><span class="nutri">Protein: 5 g</span><span class="nutri">Calories: 180 kcal</span><button onclick="add(this,5,180,6)">Add</button></div>
+      <div class="meal" data-id="7"><span>🥬 Thoran</span><span class="nutri">Protein: 4 g</span><span class="nutri">Calories: 150 kcal</span><button onclick="add(this,4,150,7)">Add</button></div>
+      <div class="meal" data-id="8"><span>🐟 Fish Curry</span><span class="nutri">Protein: 18 g</span><span class="nutri">Calories: 220 kcal</span><button onclick="add(this,18,220,8)">Add</button></div>
+      <div class="meal" data-id="9"><span>🍗 Chicken Curry</span><span class="nutri">Protein: 20 g</span><span class="nutri">Calories: 260 kcal</span><button onclick="add(this,20,260,9)">Add</button></div>
+      <div class="meal" data-id="10"><span>🥚 Egg Curry</span><span class="nutri">Protein: 12 g</span><span class="nutri">Calories: 200 kcal</span><button onclick="add(this,12,200,10)">Add</button></div>
+      <div class="meal" data-id="11"><span>🍗 Chicken Biryani</span><span class="nutri">Protein: 20 g</span><span class="nutri">Calories: 450 kcal</span><button onclick="add(this,20,450,11)">Add</button></div>
+      <div class="meal" data-id="12"><span>🍌 Nendran Banana</span><span class="nutri">Protein: 2 g</span><span class="nutri">Calories: 120 kcal</span><button onclick="add(this,2,120,12)">Add</button></div>
+      <div class="meal" data-id="13"><span>🥥 Coconut Chutney</span><span class="nutri">Protein: 2 g</span><span class="nutri">Calories: 90 kcal</span><button onclick="add(this,2,90,13)">Add</button></div>
+      <div class="meal" data-id="14"><span>💧 Water</span><span class="nutri">Protein: 0 g</span><span class="nutri">Calories: 0 kcal</span><button onclick="add(this,0,0,14)">Add</button></div>
+    </div>
+
+    <div class="summary">
+      <div>Protein <br><strong id="tp">0 g</strong></div>
+      <div>Calories <br><strong id="tc">0 kcal</strong></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Name Modal -->
+<div class="modal" id="nameModal">
+  <div class="modal-box">
+    <h3>Welcome to DietTrack</h3>
+    <p>Enter your name to continue</p>
+    <input id="nameInput" placeholder="Your name"/>
+    <button onclick="saveName()">Continue</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAa6aHm0WtwewzrwDhwBjnq5ifQRn3rjEs",
+  authDomain: "diet-planner-a8271.firebaseapp.com",
+  databaseURL: "https://diet-planner-a8271-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "diet-planner-a8271",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let currentUser = localStorage.getItem('cloudUser');
+
+function showModal(v=true){
+  document.getElementById('nameModal').style.display=v?'flex':'none';
+}
+
+window.saveName = function(){
+  let n = document.getElementById('nameInput').value.trim();
+  if(!n) n='Guest';
+  currentUser=n;
+  localStorage.setItem('cloudUser',n);
+  showModal(false);
+  loadUser();
+}
+
+if(!currentUser) showModal(true);
+
+function safeStructure(d){
+  if(!d) d = {};
+  d.protein = Number(d.protein) || 0;
+  d.calories = Number(d.calories) || 0;
+  d.items = Array.isArray(d.items) ? d.items : [];
+  return d;
+}
+
+window.loadUser = async function(){
+  if(!currentUser) return showModal(true);
+
+  document.getElementById('userLabel').innerText = currentUser;
+
+  const snap = await get(ref(db, 'users/' + currentUser));
+  let data = safeStructure(snap.val());
+
+  await set(ref(db, 'users/' + currentUser), data);
+
+  document.getElementById('tp').innerText = data.protein + ' g';
+  document.getElementById('tc').innerText = data.calories + ' kcal';
+
+  document.querySelectorAll('.meal button').forEach(b=>{
+    b.classList.remove('done'); b.innerText='Add';
+  });
+
+  (data.items || []).forEach(id=>{
+    const b = document.querySelector('[data-id="'+id+'"] button');
+    if(b){ b.classList.add('done'); b.innerText='Added ✓'; }
+  });
+}
+
+// ---- SEAMLESS ADD (optimistic UI) ----
+window.add = async function(btn,p,c,id){
+  if(btn.classList.contains('done')) return;
+
+  // Instant UI update – no lag feeling
+  btn.classList.add('done');
+  btn.innerText='Added ✓';
+
+  let tp = document.getElementById('tp');
+  let tc = document.getElementById('tc');
+
+  tp.innerText = (parseInt(tp.innerText)||0) + Number(p) + ' g';
+  tc.innerText = (parseInt(tc.innerText)||0) + Number(c) + ' kcal';
+
+  const snap = await get(ref(db,'users/'+currentUser));
+  let d = safeStructure(snap.val());
+
+  d.protein += Number(p);
+  d.calories += Number(c);
+  d.items.push(id);
+
+  // Save in background
+  set(ref(db,'users/'+currentUser), d);
+}
+
+window.resetDay = async function(){
+  const empty = {protein:0,calories:0,items:[]};
+  await set(ref(db,'users/'+currentUser), empty);
+  loadUser();
+}
+
+window.changeUser = function(){ showModal(true); }
+
+loadUser();
+</script>
+
+</body>
+</html>
